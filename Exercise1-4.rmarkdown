@@ -8,6 +8,7 @@ editor: visual
 #load packages
 library(ggplot2)
 library(tibble)
+library(here)
 ```
 
 
@@ -1180,7 +1181,7 @@ perlin_heart <- function(n = 100,
 }
 
 perlin_heart_grid <- function(nx = 10, ny = 6, seed = NULL) {
-  if(!is.null(seed)) set.seed(seed)
+  if(!is.null(seed)) set.seed(seed) }
 
 ```
 

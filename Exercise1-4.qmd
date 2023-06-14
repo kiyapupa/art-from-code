@@ -8,6 +8,7 @@ editor: visual
 #load packages
 library(ggplot2)
 library(tibble)
+library(here)
 ```
 
 ## Getting Started Exercises
@@ -1144,7 +1145,7 @@ perlin_heart <- function(n = 100,
 }
 
 perlin_heart_grid <- function(nx = 10, ny = 6, seed = NULL) {
-  if(!is.null(seed)) set.seed(seed)
+  if(!is.null(seed)) set.seed(seed) }
 
 ```
 
@@ -1643,6 +1644,8 @@ A script containing this code is included as the `ggfx-glow.R` file
 
 ```{r}
 #changing seed, time, angles, color schemes
+
+
 library(dplyr)
 library(tibble)
 library(ggplot2)
@@ -1874,3 +1877,5 @@ plot(
     with_blend(triangle, "tree", blend_type = "xor")
 )
 ```
+
+This assignment showed me a whole new capability of R that I never knew existed and for that I am grateful that I got to do this. Most of the artistic concepts such as creating trees, hearts, and polygons were completely new to me and I still think I would have trouble implementing this on my own. Choosing different color schemes and adjusting sizing for the different shapes and objects was something that I was relatively familiar with. My favorite art piece out of the exercises was the array of hearts, it was so nice to make these and to be able to change the size, range, and color. I had some struggles with running into errors when trying to change sizing and scale but most of these were able to be resolved online. I did have issues with my R crashing due to the length of the code and all of the iterations, which made it very difficult to render. This assignment was incredibly long, I took over 10 hours to complete what I was able to complete and I still did not finish the assignment to the best of my abilities as I would if I had more time. I wish that I had more time to stop and truly understand each piece of code that I was writing but due to the length of the assignment I was unable to do so. Either way this gave me a new perspective on creating art in R and though it might not be something I do in the future, it was interesting to know that it\'s something I am capable of.
