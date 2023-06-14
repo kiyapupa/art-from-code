@@ -1,0 +1,112 @@
+---
+title: "Exercises"
+format: docx
+editor: visual
+---
+
+## Shading Tricks
+
+```{r}
+library(rayshader)
+library(tibble)
+library(ambient)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(tictoc)
+library(dplyr)
+```
+
+```{r}
+#begin overlaying circles on top of each other by defining a helper function that takes coordinate vectors and returns a logical vector. The vector is true when the coordinates fall within a circle specified by the radius, x center, and y center
+is_within_circle <- function(x_coord, y_coord, x_center, y_center, radius) {
+  (x_coord - x_center)^2 + (y_coord - y_center)^2 < radius^2}
+```
+
+generates n circles at random (default value of 5), returning long grid with coordinate column x and y and value column paint with proportion of circles that each point falls in. If a point falls each of the circles the paint value would be 1 but if it falls in none of the circles it would be zero
+
+```{r}
+additive_circles <- function(n = 5, pixels = 1000, seed = NULL) { if(!is.null(seed)) set.seed(seed)
+  
+#setup canvas
+  art <- long_grid(x = seq(0, 1, length.out = pixels),
+    y = seq(0, 1, length.out = pixels))
+ 
+  art$paint <- 0
+  
+  for(i in 1:n) {
+    
+#sample a random circle
+    x_center <- runif(1, min = .3, max = .7)
+    y_center <- runif(1, min = .3, max = .7)
+    radius <- runif(1, min = .05, max = .25)
+    
+#add +1 to all points inside the circle
+    art <- art |>
+      mutate(paint = paint + is_within_circle(x, y, x_center, y_center, radius))
+  }
+  
+#normalise paint to [0, 1] range and return
+  art$paint <- normalise(art$paint)
+  return(art)
+}
+```
+
+generate output and use geom_raster to plot
+
+```{r}
+circle_art <- additive_circles(seed = 99)
+circle_art
+```
+
+```{r}
+ggplot(circle_art, aes(x, y, fill = paint)) +
+  geom_raster(show.legend = FALSE) + 
+  theme_void()
+```
+
+convert long grid to ambient package
+
+```{r}
+circle_array <- circle_art |>
+  as.array(value = paint) 
+
+circle_array[1:10, 1:10]
+```
+
+plot matrix from circle_Array
+
+```{r}
+circle_array |> 
+  image(axes = FALSE, asp = 1, useRaster = TRUE)
+```
+
+use ray shade algorithms to show height of terrain. provide sun altitude and sun angle arguments to show where the illumination source should be positioned. Use z-scale to specify z-axis relative to x and y axis
+
+```{r}
+circle_shadow <- ray_shade(
+  heightmap = circle_array,
+  sunaltitude = 15, 
+  sunangle = 135,
+  zscale = .01,
+  multicore = TRUE)
+
+plot_map(circle_shadow, rotate = 270)
+```
+
+create hill shading algorithm using sphere shade to map terrain. We must supply texture values. To create a height to color mapping we use height shade for texture and add shadow for shadow
+
+use plot map to to draw final image, and rotate to make sure it is the same orientation as the output of geom raster
+
+```{r}
+circle_scape <- circle_array |> 
+  height_shade() |>
+  add_shadow(
+    shadowmap = circle_shadow,
+    max_darken = .1)
+tic()
+plot_map(circle_scape, rotate = 270)
+toc()
+```
+
+use spatial noise patterns to create more interesting art
