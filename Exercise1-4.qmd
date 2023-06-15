@@ -52,6 +52,7 @@ polar_art <- function(seed, n, palette) {
   
   # plot segments in various colours, using 
   # polar coordinates and a gradient palette
+  #change scale size
   dat |> 
     ggplot(aes(
       x = x0,
@@ -175,15 +176,17 @@ random__palette <- function(seed) {
 ## Composition
 
 ```{r}
+#load packages
 library(dplyr)
 ```
 
 ```{r}
+#sample one of palettes at random
 sample_canva <- function(seed = NULL) {
   if(!is.null(seed)) set.seed(seed)
   sample(ggthemes::canva_palettes, 1)[[1]]
 }
-
+#writing random tibble generator function
 sample_data <- function(seed = NULL, n = 100){
   if(!is.null(seed)) set.seed(seed)
   dat <- tibble(
@@ -197,6 +200,7 @@ sample_data <- function(seed = NULL, n = 100){
 )
 }
 
+#takes palette and sets data as inputs
 polar_styled_plot <- function(data = NULL, palette) 
   ggplot(
     data = data,
@@ -240,25 +244,30 @@ polar_styled_plot(data = data1, palette = pal1) + geom_point()
 1.  In the materials folder there is a file called `polar-styled-plots.R` that contains a copy of the `sample_canva()`, `sample_data()` and `polar_styled_plot()` functions. Without modifying any of these three functions, explore how much flexibility you have to make different pieces in which (1) data are generated with `sample_data()`, (2) the plot is initialised by calling `polar_styled_plot()`, and (3) the piece is created by adding ggplot2 geoms. Data manipulation with dplyr is allowed!
 
 ```{r}
+#change n size and number of seeds
 {
 dat1 <- sample_data(n = 1500, seed = 143) 
 dat2 <- sample_data(n = 100, seed = 357) |>  
   mutate(y0 = .3 + y0 * .6, y1 = .3)
 
+#change size of data and seed number
 polar_styled_plot(palette = sample_canva(seed = 9)) + 
   geom_segment(
     data = dat1 |> mutate(size = size * 4)
-  ) + 
+  ) +
+#change size of data and color
   geom_segment(
     data = dat2 |> mutate(size = size / 3), 
     lineend = "round", 
     colour = "white"
   ) +
+#change size of data and color
   geom_segment(
     data = dat2 |> mutate(size = size / 6), 
     lineend = "round", 
     colour = "#EE7AE9"
   ) +
+#change size of data and color
   geom_point(
     data = dat2 |> mutate(size = size * 4),
     colour = "#98FB98"
@@ -269,9 +278,11 @@ polar_styled_plot(palette = sample_canva(seed = 9)) +
 1.  In the examples above and the previous exercise you saw that the `polar_styled_plot()` function plays the role of defining an overarching "style" for possible art pieces, but it doesn't completely constrain artistic freedom. Your task in this exercise is to try to write a `my_styled_plot()` that does something similar... but creates a different style that you can explore
 
 ```{r}
+#create different style to explore by changing n size and seed size
 dat <- sample_data(n = 120, seed = 80) |>
   mutate(y1 = y0, size = size / 2)
 
+#change seed size and segment position
 polar_styled_plot(palette = sample_canva(seed = 600)) + 
   geom_segment(data = dat) + 
   geom_segment(data = dat |> mutate(y1 = y1 - .3, y0 = y0 - .5)) +
@@ -279,9 +290,11 @@ polar_styled_plot(palette = sample_canva(seed = 600)) +
 ```
 
 ```{r}
+#mutate size, seed number
 dat2 <- sample_data(n = 200, seed = 1) |>
   mutate(y1 = y0, size = size / 2)
 
+#change seed size and line type
 polar_styled_plot(palette = sample_canva(seed = 3)) + 
   geom_segment(data = dat, linetype = "331312") 
 ```
@@ -291,6 +304,7 @@ polar_styled_plot(palette = sample_canva(seed = 3)) +
 Code before exercises below packages
 
 ```{r}
+#load packages
 library(dplyr)
 library(purrr)
 library(tidyr)
@@ -401,8 +415,6 @@ polygon <- square
 polygon <- insert_edge(polygon, noise = .6); show_polygon(polygon)
 polygon <- insert_edge(polygon, noise = .4); show_polygon(polygon)
 polygon <- insert_edge(polygon, noise = .2); show_polygon(polygon)
-
-
 ```
 
 ```{r}
@@ -462,26 +474,31 @@ dat <- square |>
   grow_multipolygon(n = 60, iterations = 400, noise = 2, seed = 4)
 toc()
 
-#show dat
+#show data and change square color
 show_multipolygon(dat, fill = "#40E0D0")
 ```
 
 1.  Let's look at single polygons. All the code you need to work with those is included in the `grow-polygon.R` function. Try modifying the `iterations`, `noise`, and `seed` arguments to see what kind of output is created at different parameter values.
 
 ```{r}
+#change parameter values to see how things are changed with iterations, noise, and seed arguments
+#creating object called square from the tibble
 square <- tibble(
   x = c(0, 1, 1, 0, 0),
   y = c(0, 0, 1, 1, 0),
   seg_len = c(1, 1, 1, 1, 0)
 )
 
+#showing the ploygon
 show_polygon <- function(polygon, show_vertices = TRUE, colour = "black", ...) {
   
+#creating a ggplot for the polygon, adding coord equal and a void theme 
   pic <- ggplot(polygon, aes(x, y)) +
     geom_polygon(fill = NA, colour = colour, show.legend = FALSE, ...) + 
     coord_equal() + 
     theme_void()
-  
+
+  #changing geom point size and color
   if(show_vertices == TRUE) {
     pic <- pic + geom_point(size = 2, colour = colour)
   }
@@ -496,6 +513,7 @@ edge_length <- function(x1, y1, x2, y2) {
   sqrt((x1 - x2)^2 + (y1 - y2)^2)
 }
 
+#changing edge noise size
 edge_noise <- function(size) {
   runif(1, min = -size/2, max = size/2)
 }
@@ -582,10 +600,11 @@ plot(pic)
 1.  Explore the effect of the `layers` argument in the `splotch()` system, and how it interacts with the `alpha` argument to `show_multipolygon()`
 
     ```{r}
+    #exploring the effects of the layers argument
     edge_length <- function(x1, y1, x2, y2) {
       sqrt((x1 - x2)^2 + (y1 - y2)^2)
     }
-
+    #changing size
     edge_noise <- function(size) {
       runif(1, min = -size/2, max = size/2)
     }
@@ -678,6 +697,7 @@ plot(pic)
     toc()
 
     pic <- dat |> show_multipolygon(fill = "white", alpha = .2)
+    #changing output size and plot
     ggsave(
       filename = here("output", "splotch.png"), 
       plot = pic,
@@ -690,18 +710,22 @@ plot(pic)
     ```
 
     ```{r}
+    #changing fill color for multipolygon
     show_multipolygon(splotch4, fill ="#FF1493", alpha = 0.3)
     ```
 
     ```{r}
+    #changing fill color for multipolygon
     show_multipolygon(splotch10, fill ="#1874CD", alpha = 0.3)
     ```
 
     ```{r}
+    #changing fill color for multipolygon
     show_multipolygon(splotch77, fill ="#228B22", alpha = 0.3)
     ```
 
     ```{r}
+    #changing fill color for multipolygon
     show_multipolygon(splotch99, fill ="#FF4500", alpha = 0.3)
     ```
 
@@ -715,7 +739,7 @@ plot(pic)
     edge_noise <- function(size) {
       runif(1, min = -size/3, max = size/3)
     }
-
+    #change size
     sample_edge_l <- function(polygon) {
       sample(length(polygon), 2, prob = map_dbl(polygon, ~ .x$seg_len))
     }
@@ -730,7 +754,7 @@ plot(pic)
       
       next_x <- polygon[[ind + 2]]$x
       next_y <- polygon[[ind + 2]]$y
-      
+    #change edge noise
       new_x <- (last_x + next_x) / 4 + edge_noise(len * noise)
       new_y <- (last_y + next_y) / 4 + edge_noise(len * noise)
       
@@ -780,7 +804,7 @@ plot(pic)
     ```
 
     ```{r}
-
+    #change edge length and size
     edge_length <- function(x1, y1, x2, y2) {
       sqrt((x1 - x2)^2 + (y1 - y2)^2)
     }
@@ -1000,6 +1024,7 @@ The mutate function being called to changes the data frame by adding a value for
 3.  Explore the effect of modifying the arguments. It should be possible to produce some very wild looking shapes!
 
 ```{r}
+#make heart into blob
 show_polygon <- function(polygon, show_vertices = TRUE, ...) {
   
   pic <- ggplot(polygon, aes(x, y)) +
@@ -1081,6 +1106,7 @@ Code for this system is included as the `perlin-heart-grid.R` script. To check t
 3.  Give all the hearts the "rough edged biscuit" look
 
 ```{r}
+#only show 50% of hearts
 sample_canva <- function(seed = NULL) {
   if(!is.null(seed)) set.seed(seed)
   sample(ggthemes::canva_palettes, 1)[[1]]
@@ -1114,6 +1140,7 @@ normalise_radius <- function(x, min, max) {
   normalise(x, from = c(-0.5, 0.5), to = c(min, max))
 }
 
+#add random noise to heart 
 perlin_heart <- function(n = 100, 
                          freq_init = 0.3,
                          octaves = 2, 
@@ -1151,6 +1178,7 @@ perlin_heart_grid <- function(nx = 10, ny = 6, seed = NULL) {
 50% of hearts
 
 ```{r}
+#50% hearts
 perlin_heart_grid <- function(nx = 5, ny = 3, seed = NULL) {
   if(!is.null(seed)) set.seed(seed)
   
@@ -1179,6 +1207,7 @@ plot(pic)
 adding noise
 
 ```{r}
+#random noise
 perlin_heart_grid2 <- function(nx = 10, ny = 6, seed = NULL, noise = NULL) {
   if(!is.null(seed)) set.seed(seed)
   
@@ -1206,6 +1235,7 @@ perlin_heart_grid2(seed = 451, noise = 30)
 rough edged biscuit
 
 ```{r}
+#creating rough edge biscuit
 perlin_heart_grid3 <- function(nx = 2, ny = 1, seed = NULL, noise = NULL) {
   if(!is.null(seed)) set.seed(seed)
   
@@ -1235,6 +1265,7 @@ perlin_heart_grid2(seed = 100, noise = 0)
 Code for this system is included as the `perlin-heart-grid-2.R` script. Can you modify it so that each heart is plotted in a single colour rather than in the banded pattern? With different hearts having different colours?
 
 ```{r}
+#changing size and colors
 sample_canva <- function(seed = NULL) {
   if(!is.null(seed)) set.seed(seed)
   sample(ggthemes::canva_palettes, 3)[[1]]
