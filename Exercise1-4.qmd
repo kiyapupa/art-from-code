@@ -300,7 +300,6 @@ library(ambient)
 library(tictoc)
 library(ggthemes)
 library(gifski)
-library
 ```
 
 ```{r}
@@ -1644,8 +1643,6 @@ A script containing this code is included as the `ggfx-glow.R` file
 
 ```{r}
 #changing seed, time, angles, color schemes
-
-
 library(dplyr)
 library(tibble)
 library(ggplot2)
@@ -1654,9 +1651,9 @@ library(flametree)
 library(ggfx)
 
 tree <- flametree_grow(
-  seed = 2, 
-  time = 20, 
-  angle = c(-10, 10, 20)
+  seed = 8, 
+  time = 9, 
+  angle = c(-15, 15, 30)
 )
 
 leaf <- tree |> filter(id_leaf == TRUE)
@@ -1671,21 +1668,21 @@ leaves <- geom_point(
   data = leaf, 
   size = 1.7, 
   stroke = 0, 
-  colour = "#8470FF"
+  colour = "#e30490"
 )
 
 trunk <- geom_bezier(
   mapping = aes(coord_x, coord_y, group = id_pathtree, size = seg_wid),
   data = tree, 
   lineend = "round", 
-  colour = "#32CD32",
+  colour = "#f03002",
   show.legend = FALSE
 )
 
 plot(
   base +   
     trunk + 
-    with_outer_glow(leaves, colour = "#FF00FF", sigma = 6, expand = 3)
+    with_outer_glow(leaves, colour = "#f39029", sigma = 5, expand = 3)
 )
 ```
 
@@ -1694,6 +1691,7 @@ plot(
 A script containing this code is included as the `ggfx-dither.R` file
 
 ```{r}
+#changing seed, time, angles, color schemes
 set.seed(1)
 polar <- tibble(
   arc_start = runif(300),
@@ -1732,6 +1730,7 @@ plot(base + with_halftone_dither(geom_segment()))
 A script containing this code is included as the `ggfx-mask.R` file
 
 ```{r}
+#changing seed, time, angles, color schemes
 texture <- geom_raster(
   mapping = aes(x, y, fill = paint),
   data = long_grid(
@@ -1782,7 +1781,7 @@ plot(
 A script containing this code is included as the `ggfx-displace.R` file
 
 ```{r}
-
+#changing seed, time, angles, color schemes
 polygon_layer <- function(x, y, fill = "black", alpha = .5) {
   geom_polygon(aes(x, y), fill = fill, alpha = alpha)
 }
@@ -1822,19 +1821,27 @@ plot(
 A script containing this code is included as the `ggfx-blend.R` file
 
 ```{r}
+#changing seed, time, angles, color schemes
+library(dplyr)
+library(tibble)
+library(ggplot2)
+library(ggforce)
+library(flametree)
+library(ggfx)
 
 tree <- flametree_grow(
-  seed = 2, 
-  time = 15, 
-  angle = c(-15, 15, 30))
+  seed = 1, 
+  time = 9, 
+  angle = c(-15, 15, 30)
+)
 
 leaf <- tree |> filter(id_leaf == TRUE)
 
 leaves <- geom_point(
   data = leaf, 
   mapping = aes(coord_x, coord_y, colour = seg_col),
-  colour = "seagreen",
-  size = 4, 
+  colour = "white",
+  size = 2, 
   stroke = 0
 )
 
@@ -1846,7 +1853,7 @@ trunk <- geom_bezier(
     size = seg_wid,
     group = id_pathtree
   ),
-  colour = "brown4",
+  colour = "seagreen",
   lineend = "round"
 )
 
@@ -1864,7 +1871,7 @@ triangle <- polygon_layer(
 base <- ggplot() + 
   theme_void() +
   theme(panel.background = element_rect(
-    fill = "slategrey", colour = "aquamarine"
+    fill = "slategrey", colour = "brown4"
   )) + 
   coord_equal(xlim = c(-3, 1), ylim = c(1, 5)) +
   scale_x_continuous(expand = c(0, 0)) +
@@ -1878,4 +1885,4 @@ plot(
 )
 ```
 
-This assignment showed me a whole new capability of R that I never knew existed and for that I am grateful that I got to do this. Most of the artistic concepts such as creating trees, hearts, and polygons were completely new to me and I still think I would have trouble implementing this on my own. Choosing different color schemes and adjusting sizing for the different shapes and objects was something that I was relatively familiar with. My favorite art piece out of the exercises was the array of hearts, it was so nice to make these and to be able to change the size, range, and color. I had some struggles with running into errors when trying to change sizing and scale but most of these were able to be resolved online. I did have issues with my R crashing due to the length of the code and all of the iterations, which made it very difficult to render. This assignment was incredibly long, I took over 10 hours to complete what I was able to complete and I still did not finish the assignment to the best of my abilities as I would if I had more time. I wish that I had more time to stop and truly understand each piece of code that I was writing but due to the length of the assignment I was unable to do so. Either way this gave me a new perspective on creating art in R and though it might not be something I do in the future, it was interesting to know that it\'s something I am capable of.
+This assignment showed me a whole new capability of R that I never knew existed and for that I am grateful that I got to do this. Most of the artistic concepts such as creating trees, hearts, and polygons were completely new to me and I still think I would have trouble implementing this on my own. Choosing different color schemes and adjusting sizing for the different shapes and objects was something that I was relatively familiar with. My favorite art piece out of the exercises was the array of hearts, it was so nice to make these and to be able to change the size, range, and color. I had some struggles with running into errors when trying to change sizing and scale but most of these were able to be resolved online. I did have issues with my R crashing due to the length of the code and all of the iterations, which made it very difficult to render. This assignment was incredibly long, I took over 10 hours to complete what I was able to complete and I still did not finish the assignment to the best of my abilities as I would if I had more time. I wish that I had more time to stop and truly understand each piece of code that I was writing but due to the length of the assignment I was unable to do so. Either way this gave me a new perspective on creating art in R and though it might not be something I do in the future, it was interesting to know that it's something I am capable of.
